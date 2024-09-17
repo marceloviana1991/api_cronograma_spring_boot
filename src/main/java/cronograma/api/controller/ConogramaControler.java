@@ -1,16 +1,15 @@
 package cronograma.api.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cronograma.api.dto.CronogramaDTO;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cronogramas")
 public class ConogramaControler {
 
-    @GetMapping
-    public String getCronogramas() {
-        return "Hello World Spring!";
+    @PostMapping
+    public void cadastrarCronograma(@RequestBody CronogramaDTO cronogramaDTO) {
+        System.out.println(cronogramaDTO);
     }
 
 }
