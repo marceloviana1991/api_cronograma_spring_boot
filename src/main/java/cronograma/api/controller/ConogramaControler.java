@@ -4,6 +4,7 @@ import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.dto.CronogramaDTO;
 import cronograma.api.model.Cronograma;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class ConogramaControler {
 
     @PostMapping
     @Transactional
-    public void cadastrarCronograma(@RequestBody CronogramaDTO cronogramaDTO) {
+    public void cadastrarCronograma(@RequestBody @Valid CronogramaDTO cronogramaDTO) {
         cronogramaRepository.save(new Cronograma(cronogramaDTO));
     }
 

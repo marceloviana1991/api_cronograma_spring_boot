@@ -1,4 +1,8 @@
 package cronograma.api.dto;
 
-public record CronogramaDTO(String nome) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CronogramaDTO(
+        @NotBlank
+        String nome) {
 }

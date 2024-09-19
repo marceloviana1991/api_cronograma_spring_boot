@@ -4,6 +4,7 @@ import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.EventoDTO;
 import cronograma.api.model.Evento;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class EventoControler {
 
     @PostMapping
     @Transactional
-    public void cadastrarEvento(@RequestBody EventoDTO eventoDTO) {
+    public void cadastrarEvento(@RequestBody @Valid EventoDTO eventoDTO) {
         eventoRepository.save(new Evento(eventoDTO));
     }
 }

@@ -2,7 +2,6 @@ package cronograma.api.model;
 
 import cronograma.api.dto.EventoDTO;
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
