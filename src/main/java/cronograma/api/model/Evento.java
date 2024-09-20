@@ -1,6 +1,6 @@
 package cronograma.api.model;
 
-import cronograma.api.dto.EventoDTO;
+import cronograma.api.dto.EventoCadastrarDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,21 +23,21 @@ public class Evento {
     private DiaDaSemana diaDaSemana;
     private LocalTime horario;
     private LocalTime horarioTermina;
+    static private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
 
-    public Evento(EventoDTO eventoDTO) {
-        this.nome = eventoDTO.nome();
-        this.diaDaSemana = eventoDTO.diaDaSemana();
-        this.setHorario(eventoDTO.horario());
-        this.setHorarioTermina(eventoDTO.horarioTermina());
+    public Evento(EventoCadastrarDTO eventoCadastrarDTO) {
+        this.nome = eventoCadastrarDTO.nome();
+        this.diaDaSemana = eventoCadastrarDTO.diaDaSemana();
+        this.setHorario(eventoCadastrarDTO.horario());
+        this.setHorarioTermina(eventoCadastrarDTO.horarioTermina());
     }
 
     public void setHorario(String horario) {
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
         this.horario = LocalTime.from(formatador.parse(horario));
     }
 
     public void setHorarioTermina(String horarioTermina) {
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
         this.horarioTermina = LocalTime.from(formatador.parse(horarioTermina));
     }
+
 }
