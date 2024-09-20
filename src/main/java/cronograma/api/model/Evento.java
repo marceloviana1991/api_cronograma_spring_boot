@@ -22,15 +22,22 @@ public class Evento {
     @Enumerated(EnumType.STRING)
     private DiaDaSemana diaDaSemana;
     private LocalTime horario;
+    private LocalTime horarioTermina;
 
     public Evento(EventoDTO eventoDTO) {
         this.nome = eventoDTO.nome();
         this.diaDaSemana = eventoDTO.diaDaSemana();
         this.setHorario(eventoDTO.horario());
+        this.setHorarioTermina(eventoDTO.horarioTermina());
     }
 
     public void setHorario(String horario) {
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
         this.horario = LocalTime.from(formatador.parse(horario));
+    }
+
+    public void setHorarioTermina(String horarioTermina) {
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
+        this.horarioTermina = LocalTime.from(formatador.parse(horarioTermina));
     }
 }

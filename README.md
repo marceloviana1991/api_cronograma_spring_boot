@@ -13,7 +13,7 @@ A Cronograma de Eventos API é uma aplicação desenvolvida com Spring Boot que 
  - **Exclusão de eventos:** Remover eventos indesejados do cronograma.
  - **Consulta de eventos:** Obter detalhes de eventos individuais ou uma lista de todos os eventos.
 
- ## Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - Spring Boot 3
 - Java 17
@@ -22,4 +22,8 @@ A Cronograma de Eventos API é uma aplicação desenvolvida com Spring Boot que 
 - JPA/Hibernate
 - Maven
 - Insomnia
+
+## Estrutura do Projeto
+
+![tree](tree.png)
 

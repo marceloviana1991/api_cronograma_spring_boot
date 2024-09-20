@@ -12,5 +12,8 @@ public record EventoDTO(
         DiaDaSemana diaDaSemana,
         @NotBlank
         @Pattern(regexp = "[0-2][0-3]:[0-5][0-9]")
-        String horario) {
+        String horario,
+        @NotBlank
+        @Pattern(regexp = "[0-2][0-3]:[0-5][0-9]")
+        String horarioTermina) {
 }

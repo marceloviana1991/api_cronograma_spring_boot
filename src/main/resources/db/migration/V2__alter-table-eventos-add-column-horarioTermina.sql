@@ -1,0 +1,1 @@
+alter table eventos add horario_termina time not null;
