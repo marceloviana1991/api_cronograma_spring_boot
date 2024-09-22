@@ -1,17 +1,23 @@
 package cronograma.api.model;
 
+import cronograma.api.Repository.CronogramaRepository;
+import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.EventoCadastrarDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Table(name = "eventos")
 @Entity(name = "Evento")
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Evento {
@@ -19,10 +25,13 @@ public class Evento {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private DiaDaSemana diaDaSemana;
     private LocalTime horario;
     private LocalTime horarioTermina;
+    @ManyToOne
+    @JoinColumn(name = "cronograma_id")
+    private Cronograma cronograma;
     static private final DateTimeFormatter formatador = DateTimeFormatter.ofPattern("HH:mm");
 
     public Evento(EventoCadastrarDTO eventoCadastrarDTO) {
