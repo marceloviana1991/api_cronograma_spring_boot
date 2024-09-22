@@ -35,7 +35,12 @@ public class EventoControler {
     }
 
     @GetMapping
-    public List<EventoListarDTO> listarEventos(@PageableDefault(sort = {"diaDaSemana", "horario"}) Pageable pageable) {
+    public List<EventoListarDTO> listarEventos(
+            @PageableDefault(sort = {"diaDaSemana", "horario"}) Pageable pageable,
+            @RequestParam(value = "cronogramaId", required = false) Long cronogramaId) {
+        if (cronogramaId != null) {
+            return eventoRepository.findBycronogramaId(cronogramaId).stream().map(EventoListarDTO::new).toList();
+        }
         return eventoRepository.findAll(pageable).stream().map(EventoListarDTO::new).toList();
     }
 }
