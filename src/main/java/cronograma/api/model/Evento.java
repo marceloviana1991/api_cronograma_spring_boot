@@ -1,18 +1,14 @@
 package cronograma.api.model;
 
-import cronograma.api.Repository.CronogramaRepository;
-import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.EventoCadastrarDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 @Table(name = "eventos")
 @Entity(name = "Evento")

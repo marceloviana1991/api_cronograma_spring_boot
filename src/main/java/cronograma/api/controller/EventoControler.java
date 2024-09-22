@@ -28,10 +28,12 @@ public class EventoControler {
     @PostMapping
     @Transactional
     public void cadastrarEvento(@RequestBody @Valid EventoCadastrarDTO eventoCadastrarDTO) {
-        Optional<Cronograma> cronograma = cronogramaRepository.findById(eventoCadastrarDTO.cronogramaId());
-        Evento evento = new Evento(eventoCadastrarDTO);
-        evento.setCronograma(cronograma.get());
-        eventoRepository.save(evento);
+        Optional<Cronograma> cronogramaOptional = cronogramaRepository.findById(eventoCadastrarDTO.cronogramaId());
+        if (cronogramaOptional.isPresent()) {
+            Evento evento = new Evento(eventoCadastrarDTO);
+            evento.setCronograma(cronogramaOptional.get());
+            eventoRepository.save(evento);
+        }
     }
 
     @GetMapping
