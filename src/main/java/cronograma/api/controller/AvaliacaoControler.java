@@ -2,6 +2,7 @@ package cronograma.api.controller;
 
 import cronograma.api.Repository.AvaliacaoRepository;
 import cronograma.api.Repository.EventoRepository;
+import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
 import cronograma.api.dto.AvaliacaoListarDTO;
 import cronograma.api.model.Avaliacao;
@@ -46,5 +47,12 @@ public class AvaliacaoControler {
             return avaliacaoRepository.findByeventoId(eventoId, pageable).stream().map(AvaliacaoListarDTO::new).toList();
         }
         return avaliacaoRepository.findAll(pageable).stream().map(AvaliacaoListarDTO::new).toList();
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizarAvaliacao(@RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO) {
+        Optional<Avaliacao> avaliacaoOptional = avaliacaoRepository.findById(avaliacaoAtualizarDTO.id());
+        avaliacaoOptional.ifPresent(avaliacao -> avaliacao.atualizar(avaliacaoAtualizarDTO));
     }
 }

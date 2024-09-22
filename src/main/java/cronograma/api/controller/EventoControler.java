@@ -2,6 +2,7 @@ package cronograma.api.controller;
 
 import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
+import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoListarDTO;
 import cronograma.api.model.Cronograma;
@@ -44,5 +45,12 @@ public class EventoControler {
             return eventoRepository.findBycronogramaId(cronogramaId, pageable).stream().map(EventoListarDTO::new).toList();
         }
         return eventoRepository.findAll(pageable).stream().map(EventoListarDTO::new).toList();
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizarEvento(@RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoAtualizarDTO.id());
+        eventoOptional.ifPresent(evento -> evento.atualizar(eventoAtualizarDTO));
     }
 }

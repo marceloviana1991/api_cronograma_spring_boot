@@ -1,5 +1,6 @@
 package cronograma.api.model;
 
+import cronograma.api.dto.CronogramaAtualizarDTO;
 import cronograma.api.dto.CronogramaCadastrarDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -19,5 +20,11 @@ public class Cronograma {
 
     public Cronograma(CronogramaCadastrarDTO cronogramaCadastrarDTO) {
         this.nome = cronogramaCadastrarDTO.nome();
+    }
+
+    public void atualizar(CronogramaAtualizarDTO cronogramaAtualizarDTO) {
+        if (cronogramaAtualizarDTO.nome() != null) {
+            this.nome = cronogramaAtualizarDTO.nome();
+        }
     }
 }

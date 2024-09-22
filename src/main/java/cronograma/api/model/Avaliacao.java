@@ -1,5 +1,6 @@
 package cronograma.api.model;
 
+import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -31,5 +32,14 @@ public class Avaliacao {
         this.data = LocalDate.now();
         this.nota = avaliacaoCadastrarDTO.nota();
         this.texto = avaliacaoCadastrarDTO.texto();
+    }
+
+    public void atualizar(AvaliacaoAtualizarDTO avaliacaoAtualizarDTO) {
+        if (avaliacaoAtualizarDTO.nota() != null) {
+            this.nota = avaliacaoAtualizarDTO.nota();
+        }
+        if (avaliacaoAtualizarDTO.texto() != null) {
+            this.texto = avaliacaoAtualizarDTO.texto();
+        }
     }
 }

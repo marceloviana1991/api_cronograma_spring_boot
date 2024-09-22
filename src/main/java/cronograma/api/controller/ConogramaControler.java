@@ -1,6 +1,7 @@
 package cronograma.api.controller;
 
 import cronograma.api.Repository.CronogramaRepository;
+import cronograma.api.dto.CronogramaAtualizarDTO;
 import cronograma.api.dto.CronogramaCadastrarDTO;
 import cronograma.api.dto.CronogramaListarDTO;
 import cronograma.api.model.Cronograma;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cronogramas")
@@ -27,6 +29,13 @@ public class ConogramaControler {
     @GetMapping
     public List<CronogramaListarDTO> listarCronogramas() {
         return cronogramaRepository.findAll().stream().map(CronogramaListarDTO::new).toList();
+    }
+
+    @PutMapping
+    @Transactional
+    public void atualizarCronograma(@RequestBody @Valid CronogramaAtualizarDTO cronogramaAtualizarDTO) {
+        Optional<Cronograma> cronogramaOptional = cronogramaRepository.findById(cronogramaAtualizarDTO.id());
+        cronogramaOptional.ifPresent(cronograma -> cronograma.atualizar(cronogramaAtualizarDTO));
     }
 
 }

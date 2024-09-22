@@ -1,7 +1,9 @@
 package cronograma.api.model;
 
+import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,4 +47,18 @@ public class Evento {
         this.horarioTermina = LocalTime.from(formatador.parse(horarioTermina));
     }
 
+    public void atualizar(EventoAtualizarDTO eventoAtualizarDTO) {
+        if (eventoAtualizarDTO.nome() != null) {
+            this.nome = eventoAtualizarDTO.nome();
+        }
+        if (eventoAtualizarDTO.diaDaSemana() != null) {
+            this.diaDaSemana = eventoAtualizarDTO.diaDaSemana();
+        }
+        if (eventoAtualizarDTO.horario() != null) {
+            this.setHorario(eventoAtualizarDTO.horario());
+        }
+        if (eventoAtualizarDTO.horarioTermina() != null) {
+            this.setHorarioTermina(eventoAtualizarDTO.horarioTermina());
+        }
+    }
 }
