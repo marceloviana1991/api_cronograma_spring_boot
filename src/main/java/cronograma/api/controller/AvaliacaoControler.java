@@ -55,4 +55,10 @@ public class AvaliacaoControler {
         Optional<Avaliacao> avaliacaoOptional = avaliacaoRepository.findById(avaliacaoAtualizarDTO.id());
         avaliacaoOptional.ifPresent(avaliacao -> avaliacao.atualizar(avaliacaoAtualizarDTO));
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluirAvaliacao(@PathVariable Long id) {
+        avaliacaoRepository.deleteById(id);
+    }
 }

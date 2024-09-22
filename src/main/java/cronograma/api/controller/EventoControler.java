@@ -53,4 +53,12 @@ public class EventoControler {
         Optional<Evento> eventoOptional = eventoRepository.findById(eventoAtualizarDTO.id());
         eventoOptional.ifPresent(evento -> evento.atualizar(eventoAtualizarDTO));
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluirEvento(@PathVariable Long id) {
+        eventoRepository.deleteById(id);
+    }
+
+
 }

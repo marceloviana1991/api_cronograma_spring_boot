@@ -38,4 +38,10 @@ public class ConogramaControler {
         cronogramaOptional.ifPresent(cronograma -> cronograma.atualizar(cronogramaAtualizarDTO));
     }
 
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluirCronograma(@PathVariable Long id) {
+        cronogramaRepository.deleteById(id);
+    }
+
 }
