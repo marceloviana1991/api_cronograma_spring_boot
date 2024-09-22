@@ -10,6 +10,7 @@ import cronograma.api.model.Evento;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -39,14 +40,14 @@ public class AvaliacaoControler {
     }
 
     @GetMapping
-    public List<AvaliacaoListarDTO> listarAvaliacoes(
+    public Page<AvaliacaoListarDTO> listarAvaliacoes(
             @RequestParam(value = "eventoId", required = false) Long eventoId,
             @PageableDefault(size = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
         if (eventoId != null) {
-            return avaliacaoRepository.findByeventoId(eventoId, pageable).stream().map(AvaliacaoListarDTO::new).toList();
+            return avaliacaoRepository.findByeventoId(eventoId, pageable).map(AvaliacaoListarDTO::new);
         }
-        return avaliacaoRepository.findAll(pageable).stream().map(AvaliacaoListarDTO::new).toList();
+        return avaliacaoRepository.findAll(pageable).map(AvaliacaoListarDTO::new);
     }
 
     @PutMapping
@@ -56,9 +57,4 @@ public class AvaliacaoControler {
         avaliacaoOptional.ifPresent(avaliacao -> avaliacao.atualizar(avaliacaoAtualizarDTO));
     }
 
-    @DeleteMapping("/{id}")
-    @Transactional
-    public void excluirAvaliacao(@PathVariable Long id) {
-        avaliacaoRepository.deleteById(id);
-    }
 }

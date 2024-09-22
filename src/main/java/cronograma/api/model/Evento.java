@@ -3,7 +3,6 @@ package cronograma.api.model;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +26,7 @@ public class Evento {
     private DiaDaSemana diaDaSemana;
     private LocalTime horario;
     private LocalTime horarioTermina;
+    private boolean ativo;
     @ManyToOne
     @JoinColumn(name = "cronograma_id")
     private Cronograma cronograma;
@@ -37,6 +37,7 @@ public class Evento {
         this.diaDaSemana = eventoCadastrarDTO.diaDaSemana();
         this.setHorario(eventoCadastrarDTO.horario());
         this.setHorarioTermina(eventoCadastrarDTO.horarioTermina());
+        this.ativo = true;
     }
 
     public void setHorario(String horario) {
@@ -60,5 +61,9 @@ public class Evento {
         if (eventoAtualizarDTO.horarioTermina() != null) {
             this.setHorarioTermina(eventoAtualizarDTO.horarioTermina());
         }
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }

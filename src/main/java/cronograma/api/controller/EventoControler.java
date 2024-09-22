@@ -10,6 +10,7 @@ import cronograma.api.model.Evento;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +39,13 @@ public class EventoControler {
     }
 
     @GetMapping
-    public List<EventoListarDTO> listarEventos(
+    public Page<EventoListarDTO> listarEventos(
             @PageableDefault(sort = {"diaDaSemana", "horario"}) Pageable pageable,
             @RequestParam(value = "cronogramaId", required = false) Long cronogramaId) {
         if (cronogramaId != null) {
-            return eventoRepository.findBycronogramaId(cronogramaId, pageable).stream().map(EventoListarDTO::new).toList();
+            return eventoRepository.findAllBycronogramaIdAndAtivoTrue(cronogramaId, pageable).map(EventoListarDTO::new);
         }
-        return eventoRepository.findAll(pageable).stream().map(EventoListarDTO::new).toList();
+        return eventoRepository.findAllByAtivoTrue(pageable).map(EventoListarDTO::new);
     }
 
     @PutMapping
@@ -57,8 +58,8 @@ public class EventoControler {
     @DeleteMapping("/{id}")
     @Transactional
     public void excluirEvento(@PathVariable Long id) {
-        eventoRepository.deleteById(id);
+        Optional<Evento> eventoOptional = eventoRepository.findById(id);
+        eventoOptional.ifPresent(Evento::excluir);
     }
-
 
 }
