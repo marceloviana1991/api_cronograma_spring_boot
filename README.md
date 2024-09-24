@@ -8,10 +8,11 @@ A Cronograma de Eventos API é uma aplicação desenvolvida com Spring Boot que 
 
 ## Funcionalidades principais
 
- - **Criação de eventos:** Adicionar novos eventos ao cronograma.
- - **Atualização de eventos:** Modificar dados de eventos existentes.
- - **Exclusão de eventos:** Remover eventos indesejados do cronograma.
- - **Consulta de eventos:** Obter detalhes de eventos individuais ou uma lista de todos os eventos.
+ - **endpoints de cronogramas** com métodos POST, GET e PUT;
+ - **endpoints de eventos** com métodos POST, GET, PUT e DELETE. Possui relacionamento de muitos para 1 com a entidade cronograma;
+ - **endpoints de avaliações** com métodos POST, GET e PUT. Possui relacionamento de muitos para 1 com a entidade evento.
+ 
+ O método DELETE, implementado nos endpoints de eventos, é baseado no conceito de exclusão lógica.
 
 ## Tecnologias Utilizadas
 
