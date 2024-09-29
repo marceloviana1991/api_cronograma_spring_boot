@@ -47,5 +47,4 @@ public class ConogramaControler {
         return ResponseEntity.created(uri).body(new CronogramaDetalhamentoDTO(cronograma));
     }
 
-
 }

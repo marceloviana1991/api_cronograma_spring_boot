@@ -2,12 +2,15 @@ package cronograma.api.controller;
 
 import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
+import cronograma.api.Service.TokenService;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoDetalhamentoDTO;
 import cronograma.api.dto.EventoListarDTO;
+import cronograma.api.infra.SecurityFilter;
 import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +30,18 @@ public class EventoControler {
     private EventoRepository eventoRepository;
     @Autowired
     private CronogramaRepository cronogramaRepository;
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping
     @Transactional
     public ResponseEntity<EventoDetalhamentoDTO> cadastrarEvento(@RequestBody @Valid EventoCadastrarDTO
                                                                              eventoCadastrarDTO,
-                                                                 UriComponentsBuilder uriComponentsBuilder) {
-        Cronograma cronograma = cronogramaRepository.getReferenceById(eventoCadastrarDTO.cronogramaId());
+                                                                 UriComponentsBuilder uriComponentsBuilder,
+                                                                 HttpServletRequest request) {
+        var tokenJWT = recuperarToken(request);
+        var subject = tokenService.getSubject(tokenJWT);
+        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Evento evento = new Evento(eventoCadastrarDTO);
         evento.setCronograma(cronograma);
         eventoRepository.save(evento);
@@ -77,6 +85,24 @@ public class EventoControler {
     public ResponseEntity<EventoDetalhamentoDTO> detalharEvento(@PathVariable Long id) {
         Evento evento = eventoRepository.getReferenceById(id);
         return ResponseEntity.ok(new EventoDetalhamentoDTO(evento));
+    }
+
+    private String recuperarToken(HttpServletRequest request) {
+        var authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null) {
+            return authorizationHeader.replace("Bearer ", "");
+        }
+        return null;
+    }
+
+    private Cronograma recuperarCronograma(HttpServletRequest request) {
+        var tokenJWT = recuperarToken(request);
+        if (tokenJWT != null) {
+            var subject = tokenService.getSubject(tokenJWT);
+            var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
+            return cronograma;
+        }
+        return null;
     }
 
 }
