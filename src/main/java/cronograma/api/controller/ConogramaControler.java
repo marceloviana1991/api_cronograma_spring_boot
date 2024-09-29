@@ -1,17 +1,16 @@
 package cronograma.api.controller;
 
 import cronograma.api.Repository.CronogramaRepository;
-import cronograma.api.dto.CronogramaAtualizarDTO;
-import cronograma.api.dto.CronogramaCadastrarDTO;
-import cronograma.api.dto.CronogramaListarDTO;
+import cronograma.api.dto.*;
 import cronograma.api.model.Cronograma;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cronogramas")
@@ -22,20 +21,29 @@ public class ConogramaControler {
 
     @PostMapping
     @Transactional
-    public void cadastrarCronograma(@RequestBody @Valid CronogramaCadastrarDTO cronogramaCadastrarDTO) {
-        cronogramaRepository.save(new Cronograma(cronogramaCadastrarDTO));
+    public ResponseEntity<CronogramaDetalhamentoDTO> cadastrarCronograma(
+            @RequestBody @Valid CronogramaCadastrarDTO cronogramaCadastrarDTO,
+            UriComponentsBuilder uriComponentsBuilder) {
+        Cronograma cronograma = new Cronograma(cronogramaCadastrarDTO);
+        cronogramaRepository.save(cronograma);
+        var uri = uriComponentsBuilder.path("/cronogramas/{id}").buildAndExpand(cronograma.getId()).toUri();
+        return ResponseEntity.created(uri).body(new CronogramaDetalhamentoDTO(cronograma));
     }
 
     @GetMapping
-    public List<CronogramaListarDTO> listarCronogramas() {
-        return cronogramaRepository.findAll().stream().map(CronogramaListarDTO::new).toList();
+    public ResponseEntity<List<CronogramaListarDTO>> listarCronogramas() {
+        List<CronogramaListarDTO> cronogramaListarDTOList = cronogramaRepository.findAll().stream()
+                .map(CronogramaListarDTO::new).toList();
+        return ResponseEntity.ok(cronogramaListarDTOList);
     }
 
     @PutMapping
     @Transactional
-    public void atualizarCronograma(@RequestBody @Valid CronogramaAtualizarDTO cronogramaAtualizarDTO) {
-        Optional<Cronograma> cronogramaOptional = cronogramaRepository.findById(cronogramaAtualizarDTO.id());
-        cronogramaOptional.ifPresent(cronograma -> cronograma.atualizar(cronogramaAtualizarDTO));
+    public ResponseEntity<CronogramaDetalhamentoDTO> atualizarCronograma(
+            @RequestBody @Valid CronogramaAtualizarDTO cronogramaAtualizarDTO) {
+        Cronograma cronograma = cronogramaRepository.getReferenceById(cronogramaAtualizarDTO.id());
+        cronograma.atualizar(cronogramaAtualizarDTO);
+        return ResponseEntity.ok(new CronogramaDetalhamentoDTO(cronograma));
     }
 
 }

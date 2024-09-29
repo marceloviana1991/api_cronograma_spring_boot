@@ -4,19 +4,20 @@ import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
+import cronograma.api.dto.EventoDetalhamentoDTO;
 import cronograma.api.dto.EventoListarDTO;
 import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/eventos")
@@ -29,37 +30,53 @@ public class EventoControler {
 
     @PostMapping
     @Transactional
-    public void cadastrarEvento(@RequestBody @Valid EventoCadastrarDTO eventoCadastrarDTO) {
-        Optional<Cronograma> cronogramaOptional = cronogramaRepository.findById(eventoCadastrarDTO.cronogramaId());
-        if (cronogramaOptional.isPresent()) {
-            Evento evento = new Evento(eventoCadastrarDTO);
-            evento.setCronograma(cronogramaOptional.get());
-            eventoRepository.save(evento);
-        }
+    public ResponseEntity<EventoDetalhamentoDTO> cadastrarEvento(@RequestBody @Valid EventoCadastrarDTO
+                                                                             eventoCadastrarDTO,
+                                                                 UriComponentsBuilder uriComponentsBuilder) {
+        Cronograma cronograma = cronogramaRepository.getReferenceById(eventoCadastrarDTO.cronogramaId());
+        Evento evento = new Evento(eventoCadastrarDTO);
+        evento.setCronograma(cronograma);
+        eventoRepository.save(evento);
+        var uri = uriComponentsBuilder.path("/eventos/{id}").buildAndExpand(evento.getId()).toUri();
+        return ResponseEntity.created(uri).body(new EventoDetalhamentoDTO((evento)));
     }
 
     @GetMapping
-    public Page<EventoListarDTO> listarEventos(
+    public ResponseEntity<List<EventoListarDTO>> listarEventos(
             @PageableDefault(sort = {"diaDaSemana", "horario"}) Pageable pageable,
             @RequestParam(value = "cronogramaId", required = false) Long cronogramaId) {
         if (cronogramaId != null) {
-            return eventoRepository.findAllBycronogramaIdAndAtivoTrue(cronogramaId, pageable).map(EventoListarDTO::new);
+            List<EventoListarDTO> eventoListarDTOList = eventoRepository.findAllBycronogramaIdAndAtivoTrue(cronogramaId,
+                            pageable).stream()
+                    .map(EventoListarDTO::new).toList();
+            return ResponseEntity.ok(eventoListarDTOList);
         }
-        return eventoRepository.findAllByAtivoTrue(pageable).map(EventoListarDTO::new);
+        List<EventoListarDTO> eventoListarDTOList = eventoRepository.findAllByAtivoTrue(pageable).stream()
+                .map(EventoListarDTO::new).toList();
+        return ResponseEntity.ok(eventoListarDTOList);
     }
 
     @PutMapping
     @Transactional
-    public void atualizarEvento(@RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO) {
-        Optional<Evento> eventoOptional = eventoRepository.findById(eventoAtualizarDTO.id());
-        eventoOptional.ifPresent(evento -> evento.atualizar(eventoAtualizarDTO));
+    public ResponseEntity<EventoDetalhamentoDTO> atualizarEvento(
+            @RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO) {
+        Evento evento = eventoRepository.getReferenceById(eventoAtualizarDTO.id());
+        evento.atualizar(eventoAtualizarDTO);
+        return ResponseEntity.ok(new EventoDetalhamentoDTO((evento)));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluirEvento(@PathVariable Long id) {
-        Optional<Evento> eventoOptional = eventoRepository.findById(id);
-        eventoOptional.ifPresent(Evento::excluir);
+    public ResponseEntity<?> excluirEvento(@PathVariable Long id) {
+        Evento evento = eventoRepository.getReferenceById(id);
+        evento.excluir();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<EventoDetalhamentoDTO> detalharEvento(@PathVariable Long id) {
+        Evento evento = eventoRepository.getReferenceById(id);
+        return ResponseEntity.ok(new EventoDetalhamentoDTO(evento));
     }
 
 }

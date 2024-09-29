@@ -4,6 +4,7 @@ import cronograma.api.Repository.AvaliacaoRepository;
 import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
+import cronograma.api.dto.AvaliacaoDetalhamentoDTO;
 import cronograma.api.dto.AvaliacaoListarDTO;
 import cronograma.api.model.Avaliacao;
 import cronograma.api.model.Evento;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,31 +33,39 @@ public class AvaliacaoControler {
 
     @PostMapping
     @Transactional
-    public void cadastrarAvaliacao(@RequestBody @Valid AvaliacaoCadastrarDTO avaliacaoCadastrarDTO) {
-        Optional<Evento> eventoOptional = eventoRepository.findById(avaliacaoCadastrarDTO.eventoId());
-        if (eventoOptional.isPresent()) {
-            Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
-            avaliacao.setEvento(eventoOptional.get());
-            avaliacaoRepository.save(avaliacao);
-        }
+    public ResponseEntity<AvaliacaoDetalhamentoDTO> cadastrarAvaliacao(
+            @RequestBody @Valid AvaliacaoCadastrarDTO avaliacaoCadastrarDTO,
+            UriComponentsBuilder uriComponentsBuilder) {
+        Evento evento = eventoRepository.getReferenceById(avaliacaoCadastrarDTO.eventoId());
+        Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
+        avaliacao.setEvento(evento);
+        avaliacaoRepository.save(avaliacao);
+        var uri = uriComponentsBuilder.path("/avaliacoes/{id}").buildAndExpand(avaliacao.getId()).toUri();
+        return ResponseEntity.created(uri).body(new AvaliacaoDetalhamentoDTO(avaliacao));
     }
 
     @GetMapping
-    public Page<AvaliacaoListarDTO> listarAvaliacoes(
+    public ResponseEntity<List<AvaliacaoListarDTO>> listarAvaliacoes(
             @RequestParam(value = "eventoId", required = false) Long eventoId,
             @PageableDefault(size = 5, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
         if (eventoId != null) {
-            return avaliacaoRepository.findByeventoId(eventoId, pageable).map(AvaliacaoListarDTO::new);
+            List<AvaliacaoListarDTO> avaliacaoListarDTOList = avaliacaoRepository.findByeventoId(eventoId, pageable)
+                    .stream().map(AvaliacaoListarDTO::new).toList();
+            return ResponseEntity.ok(avaliacaoListarDTOList);
         }
-        return avaliacaoRepository.findAll(pageable).map(AvaliacaoListarDTO::new);
+        List<AvaliacaoListarDTO> avaliacaoListarDTOList = avaliacaoRepository.findAll(pageable).stream()
+                .map(AvaliacaoListarDTO::new).toList();
+        return ResponseEntity.ok(avaliacaoListarDTOList);
     }
 
     @PutMapping
     @Transactional
-    public void atualizarAvaliacao(@RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO) {
-        Optional<Avaliacao> avaliacaoOptional = avaliacaoRepository.findById(avaliacaoAtualizarDTO.id());
-        avaliacaoOptional.ifPresent(avaliacao -> avaliacao.atualizar(avaliacaoAtualizarDTO));
+    public ResponseEntity<AvaliacaoDetalhamentoDTO> atualizarAvaliacao(
+            @RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO) {
+        Avaliacao avaliacao = avaliacaoRepository.getReferenceById(avaliacaoAtualizarDTO.id());
+        avaliacao.atualizar(avaliacaoAtualizarDTO);
+        return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
     }
 
 }
