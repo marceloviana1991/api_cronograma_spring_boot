@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 public record CronogramaAtualizarDTO(
         @NotNull
         Long id,
-        String nome
+        String nome,
+        String login,
+        String senha
 ) {
 }
