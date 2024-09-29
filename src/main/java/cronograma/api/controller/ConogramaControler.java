@@ -46,4 +46,9 @@ public class ConogramaControler {
         return ResponseEntity.ok(new CronogramaDetalhamentoDTO(cronograma));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CronogramaDetalhamentoDTO> detalharCronograma(@PathVariable Long id) {
+        Cronograma cronograma = cronogramaRepository.getReferenceById(id);
+        return ResponseEntity.ok(new CronogramaDetalhamentoDTO(cronograma));
+    }
 }

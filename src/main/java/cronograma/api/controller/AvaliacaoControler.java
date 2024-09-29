@@ -68,4 +68,10 @@ public class AvaliacaoControler {
         return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AvaliacaoDetalhamentoDTO> detalharAvaliacao(@PathVariable Long id) {
+        Avaliacao avaliacao = avaliacaoRepository.getReferenceById(id);
+        return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
+    }
+
 }

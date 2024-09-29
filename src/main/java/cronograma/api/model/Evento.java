@@ -34,7 +34,7 @@ public class Evento {
 
     public Evento(EventoCadastrarDTO eventoCadastrarDTO) {
         this.nome = eventoCadastrarDTO.nome();
-        this.diaDaSemana = eventoCadastrarDTO.diaDaSemana();
+        this.diaDaSemana = DiaDaSemana.fromString(eventoCadastrarDTO.diaDaSemana());
         this.setHorario(eventoCadastrarDTO.horario());
         this.setHorarioTermina(eventoCadastrarDTO.horarioTermina());
         this.ativo = true;
