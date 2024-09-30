@@ -75,10 +75,17 @@ public class AvaliacaoControler {
     @PutMapping
     @Transactional
     public ResponseEntity<AvaliacaoDetalhamentoDTO> atualizarAvaliacao(
-            @RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO) {
+            @RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO,
+            HttpServletRequest request) {
+        var tokenJWT = tokenService.getToken(request);
+        var subject = tokenService.getSubject(tokenJWT);
+        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Avaliacao avaliacao = avaliacaoRepository.getReferenceById(avaliacaoAtualizarDTO.id());
-        avaliacao.atualizar(avaliacaoAtualizarDTO);
-        return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
+        if (cronograma.equals(avaliacao.getCronograma())) {
+            avaliacao.atualizar(avaliacaoAtualizarDTO);
+            return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/{id}")

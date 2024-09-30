@@ -66,18 +66,31 @@ public class EventoControler {
     @PutMapping
     @Transactional
     public ResponseEntity<EventoDetalhamentoDTO> atualizarEvento(
-            @RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO) {
+            @RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO,
+            HttpServletRequest request) {
+        var tokenJWT = tokenService.getToken(request);
+        var subject = tokenService.getSubject(tokenJWT);
+        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Evento evento = eventoRepository.getReferenceById(eventoAtualizarDTO.id());
-        evento.atualizar(eventoAtualizarDTO);
-        return ResponseEntity.ok(new EventoDetalhamentoDTO((evento)));
+        if (cronograma.equals(evento.getCronograma())) {
+            evento.atualizar(eventoAtualizarDTO);
+            return ResponseEntity.ok(new EventoDetalhamentoDTO((evento)));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> excluirEvento(@PathVariable Long id) {
+    public ResponseEntity<?> excluirEvento(@PathVariable Long id, HttpServletRequest request) {
+        var tokenJWT = tokenService.getToken(request);
+        var subject = tokenService.getSubject(tokenJWT);
+        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Evento evento = eventoRepository.getReferenceById(id);
-        evento.excluir();
-        return ResponseEntity.noContent().build();
+        if (cronograma.equals(evento.getCronograma())) {
+            evento.excluir();
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("{id}")
