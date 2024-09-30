@@ -95,7 +95,7 @@ public class EventoControler {
 
     @GetMapping("{id}")
     public ResponseEntity<EventoDetalhamentoDTO> detalharEvento(@PathVariable Long id) {
-        Evento evento = eventoRepository.getReferenceById(id);
+        Evento evento = eventoRepository.findByIdAndAtivoTrue(id);
         return ResponseEntity.ok(new EventoDetalhamentoDTO(evento));
     }
 

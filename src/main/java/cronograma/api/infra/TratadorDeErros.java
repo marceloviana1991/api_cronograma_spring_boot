@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TratadorDeErros {
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({EntityNotFoundException.class, NullPointerException.class})
     public ResponseEntity<?> tratarErro404() {
         return ResponseEntity.notFound().build();
     }

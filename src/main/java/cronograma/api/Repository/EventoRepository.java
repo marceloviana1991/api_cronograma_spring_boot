@@ -11,4 +11,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     List<Evento> findAllBycronogramaIdAndAtivoTrue(Long cronogramaId, Pageable pageable);
 
     List<Evento> findAllByAtivoTrue(Pageable pageable);
+
+    Evento findByIdAndAtivoTrue(Long id);
 }
