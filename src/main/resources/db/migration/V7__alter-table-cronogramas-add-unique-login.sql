@@ -1,0 +1,1 @@
+alter table cronogramas add unique(login);
