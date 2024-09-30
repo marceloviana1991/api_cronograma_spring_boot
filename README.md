@@ -18,6 +18,7 @@ A Cronograma de Eventos API é uma aplicação desenvolvida com Spring Boot que 
 - Tratamento de erros
 - Autenticação/Autorização
 - Tokens JWT
+- Não-repúdio
 
 
 ## Funcionalidades do Controller
@@ -37,6 +38,8 @@ A Cronograma de Eventos API é uma aplicação desenvolvida com Spring Boot que 
 - JPA/Hibernate
 - Maven
 - Insomnia
+- Security
+- auth0
 
 ## Estrutura do Projeto
 
