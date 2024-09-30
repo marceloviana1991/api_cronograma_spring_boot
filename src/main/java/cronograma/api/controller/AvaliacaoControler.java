@@ -1,13 +1,17 @@
 package cronograma.api.controller;
 
 import cronograma.api.Repository.AvaliacaoRepository;
+import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
+import cronograma.api.Service.TokenService;
 import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
 import cronograma.api.dto.AvaliacaoDetalhamentoDTO;
 import cronograma.api.dto.AvaliacaoListarDTO;
 import cronograma.api.model.Avaliacao;
+import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +34,23 @@ public class AvaliacaoControler {
     private AvaliacaoRepository avaliacaoRepository;
     @Autowired
     private EventoRepository eventoRepository;
+    @Autowired
+    private CronogramaRepository cronogramaRepository;
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping
     @Transactional
     public ResponseEntity<AvaliacaoDetalhamentoDTO> cadastrarAvaliacao(
             @RequestBody @Valid AvaliacaoCadastrarDTO avaliacaoCadastrarDTO,
-            UriComponentsBuilder uriComponentsBuilder) {
+            UriComponentsBuilder uriComponentsBuilder,
+            HttpServletRequest request) {
+        var tokenJWT = tokenService.getToken(request);
+        var subject = tokenService.getSubject(tokenJWT);
+        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Evento evento = eventoRepository.getReferenceById(avaliacaoCadastrarDTO.eventoId());
         Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
+        avaliacao.setCronograma(cronograma);
         avaliacao.setEvento(evento);
         avaliacaoRepository.save(avaliacao);
         var uri = uriComponentsBuilder.path("/avaliacoes/{id}").buildAndExpand(avaliacao.getId()).toUri();

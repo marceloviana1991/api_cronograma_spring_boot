@@ -27,6 +27,9 @@ public class Avaliacao {
     @ManyToOne
     @JoinColumn(name = "evento_id")
     private Evento evento;
+    @ManyToOne
+    @JoinColumn(name = "cronograma_id")
+    private Cronograma cronograma;
 
     public Avaliacao(AvaliacaoCadastrarDTO avaliacaoCadastrarDTO) {
         this.data = LocalDate.now();

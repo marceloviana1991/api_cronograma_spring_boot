@@ -9,7 +9,8 @@ public record AvaliacaoDetalhamentoDTO(
         double nota,
         String texto,
         LocalDate data,
-        Long eventoId
+        Long eventoId,
+        Long cronogramaId
 ) {
     public AvaliacaoDetalhamentoDTO(Avaliacao avaliacao) {
         this(
@@ -17,7 +18,8 @@ public record AvaliacaoDetalhamentoDTO(
                 avaliacao.getNota(),
                 avaliacao.getTexto(),
                 avaliacao.getData(),
-                avaliacao.getEvento().getId()
+                avaliacao.getEvento().getId(),
+                avaliacao.getCronograma().getId()
         );
     }
 }
