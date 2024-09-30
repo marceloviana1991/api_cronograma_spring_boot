@@ -7,7 +7,6 @@ import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoDetalhamentoDTO;
 import cronograma.api.dto.EventoListarDTO;
-import cronograma.api.infra.SecurityFilter;
 import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class EventoControler {
                                                                              eventoCadastrarDTO,
                                                                  UriComponentsBuilder uriComponentsBuilder,
                                                                  HttpServletRequest request) {
-        var tokenJWT = recuperarToken(request);
+        var tokenJWT = tokenService.getToken(request);
         var subject = tokenService.getSubject(tokenJWT);
         var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
         Evento evento = new Evento(eventoCadastrarDTO);
@@ -85,24 +84,6 @@ public class EventoControler {
     public ResponseEntity<EventoDetalhamentoDTO> detalharEvento(@PathVariable Long id) {
         Evento evento = eventoRepository.getReferenceById(id);
         return ResponseEntity.ok(new EventoDetalhamentoDTO(evento));
-    }
-
-    private String recuperarToken(HttpServletRequest request) {
-        var authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null) {
-            return authorizationHeader.replace("Bearer ", "");
-        }
-        return null;
-    }
-
-    private Cronograma recuperarCronograma(HttpServletRequest request) {
-        var tokenJWT = recuperarToken(request);
-        if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-            return cronograma;
-        }
-        return null;
     }
 
 }

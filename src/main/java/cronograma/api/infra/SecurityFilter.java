@@ -2,7 +2,6 @@ package cronograma.api.infra;
 
 import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Service.TokenService;
-import cronograma.api.model.Cronograma;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        var tokenJWT = recuperarToken(request);
+        var tokenJWT = tokenService.getToken(request);
         if (tokenJWT != null) {
             var subject = tokenService.getSubject(tokenJWT);
             var cronograma = cronogramaRepository.findByLogin(subject);
@@ -34,24 +33,5 @@ public class SecurityFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private String recuperarToken(HttpServletRequest request) {
-        var authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader != null) {
-            return authorizationHeader.replace("Bearer ", "");
-        }
-        return null;
-    }
-
-    private Cronograma recuperarCronograma(HttpServletRequest request) {
-        var tokenJWT = recuperarToken(request);
-        if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
-            var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-            return cronograma;
-        }
-        return null;
     }
 }
