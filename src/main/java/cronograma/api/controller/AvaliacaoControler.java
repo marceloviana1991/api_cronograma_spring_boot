@@ -67,7 +67,7 @@ public class AvaliacaoControler {
                     .stream().map(AvaliacaoListarDTO::new).toList();
             return ResponseEntity.ok(avaliacaoListarDTOList);
         }
-        List<AvaliacaoListarDTO> avaliacaoListarDTOList = avaliacaoRepository.findAll(pageable).stream()
+        List<AvaliacaoListarDTO> avaliacaoListarDTOList = avaliacaoRepository.findByEventoAtivoTrue(pageable).stream()
                 .map(AvaliacaoListarDTO::new).toList();
         return ResponseEntity.ok(avaliacaoListarDTOList);
     }
