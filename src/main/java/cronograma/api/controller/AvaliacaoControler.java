@@ -3,6 +3,7 @@ package cronograma.api.controller;
 import cronograma.api.Repository.AvaliacaoRepository;
 import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
+import cronograma.api.Service.AvaliacaoService;
 import cronograma.api.Service.TokenService;
 import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
@@ -15,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/avaliacoes")
@@ -38,6 +37,8 @@ public class AvaliacaoControler {
     private CronogramaRepository cronogramaRepository;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private AvaliacaoService avaliacaoService;
 
     @PostMapping
     @Transactional
@@ -45,13 +46,7 @@ public class AvaliacaoControler {
             @RequestBody @Valid AvaliacaoCadastrarDTO avaliacaoCadastrarDTO,
             UriComponentsBuilder uriComponentsBuilder,
             HttpServletRequest request) {
-        var tokenJWT = tokenService.getToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
-        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        Evento evento = eventoRepository.getReferenceById(avaliacaoCadastrarDTO.eventoId());
-        Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
-        avaliacao.setCronograma(cronograma);
-        avaliacao.setEvento(evento);
+        Avaliacao avaliacao = avaliacaoService.instaciar(avaliacaoCadastrarDTO, request);
         avaliacaoRepository.save(avaliacao);
         var uri = uriComponentsBuilder.path("/avaliacoes/{id}").buildAndExpand(avaliacao.getId()).toUri();
         return ResponseEntity.created(uri).body(new AvaliacaoDetalhamentoDTO(avaliacao));
@@ -77,12 +72,8 @@ public class AvaliacaoControler {
     public ResponseEntity<AvaliacaoDetalhamentoDTO> atualizarAvaliacao(
             @RequestBody @Valid AvaliacaoAtualizarDTO avaliacaoAtualizarDTO,
             HttpServletRequest request) {
-        var tokenJWT = tokenService.getToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
-        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        Avaliacao avaliacao = avaliacaoRepository.getReferenceById(avaliacaoAtualizarDTO.id());
-        if (cronograma.equals(avaliacao.getCronograma())) {
-            avaliacao.atualizar(avaliacaoAtualizarDTO);
+        Avaliacao avaliacao = avaliacaoService.atualizar(avaliacaoAtualizarDTO, request);
+        if (avaliacao != null) {
             return ResponseEntity.ok(new AvaliacaoDetalhamentoDTO(avaliacao));
         }
         return ResponseEntity.badRequest().build();

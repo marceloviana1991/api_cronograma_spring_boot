@@ -35,17 +35,9 @@ public class Evento {
     public Evento(EventoCadastrarDTO eventoCadastrarDTO) {
         this.nome = eventoCadastrarDTO.nome();
         this.diaDaSemana = DiaDaSemana.fromString(eventoCadastrarDTO.diaDaSemana());
-        this.setHorario(eventoCadastrarDTO.horario());
-        this.setHorarioTermina(eventoCadastrarDTO.horarioTermina());
+        this.horario = eventoCadastrarDTO.horario();
+        this.horarioTermina = eventoCadastrarDTO.horarioTermina();
         this.ativo = true;
-    }
-
-    public void setHorario(String horario) {
-        this.horario = LocalTime.from(formatador.parse(horario));
-    }
-
-    public void setHorarioTermina(String horarioTermina) {
-        this.horarioTermina = LocalTime.from(formatador.parse(horarioTermina));
     }
 
     public void atualizar(EventoAtualizarDTO eventoAtualizarDTO) {
@@ -56,10 +48,10 @@ public class Evento {
             this.diaDaSemana = eventoAtualizarDTO.diaDaSemana();
         }
         if (eventoAtualizarDTO.horario() != null) {
-            this.setHorario(eventoAtualizarDTO.horario());
+            this.horario = eventoAtualizarDTO.horario();
         }
         if (eventoAtualizarDTO.horarioTermina() != null) {
-            this.setHorarioTermina(eventoAtualizarDTO.horarioTermina());
+            this.horarioTermina = eventoAtualizarDTO.horarioTermina();
         }
     }
 

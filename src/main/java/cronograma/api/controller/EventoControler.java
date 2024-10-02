@@ -1,13 +1,11 @@
 package cronograma.api.controller;
 
-import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
-import cronograma.api.Service.TokenService;
+import cronograma.api.Service.EventoService;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoDetalhamentoDTO;
 import cronograma.api.dto.EventoListarDTO;
-import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -28,9 +26,7 @@ public class EventoControler {
     @Autowired
     private EventoRepository eventoRepository;
     @Autowired
-    private CronogramaRepository cronogramaRepository;
-    @Autowired
-    private TokenService tokenService;
+    private EventoService eventoService;
 
     @PostMapping
     @Transactional
@@ -38,11 +34,7 @@ public class EventoControler {
                                                                              eventoCadastrarDTO,
                                                                  UriComponentsBuilder uriComponentsBuilder,
                                                                  HttpServletRequest request) {
-        var tokenJWT = tokenService.getToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
-        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        Evento evento = new Evento(eventoCadastrarDTO);
-        evento.setCronograma(cronograma);
+        Evento evento = eventoService.instanciar(eventoCadastrarDTO, request);
         eventoRepository.save(evento);
         var uri = uriComponentsBuilder.path("/eventos/{id}").buildAndExpand(evento.getId()).toUri();
         return ResponseEntity.created(uri).body(new EventoDetalhamentoDTO((evento)));
@@ -68,12 +60,8 @@ public class EventoControler {
     public ResponseEntity<EventoDetalhamentoDTO> atualizarEvento(
             @RequestBody @Valid EventoAtualizarDTO eventoAtualizarDTO,
             HttpServletRequest request) {
-        var tokenJWT = tokenService.getToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
-        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        Evento evento = eventoRepository.getReferenceById(eventoAtualizarDTO.id());
-        if (cronograma.equals(evento.getCronograma())) {
-            evento.atualizar(eventoAtualizarDTO);
+        Evento evento = eventoService.atualizar(eventoAtualizarDTO, request);
+        if (evento != null) {
             return ResponseEntity.ok(new EventoDetalhamentoDTO((evento)));
         }
         return ResponseEntity.badRequest().build();
@@ -82,12 +70,8 @@ public class EventoControler {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<?> excluirEvento(@PathVariable Long id, HttpServletRequest request) {
-        var tokenJWT = tokenService.getToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
-        var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        Evento evento = eventoRepository.getReferenceById(id);
-        if (cronograma.equals(evento.getCronograma())) {
-            evento.excluir();
+        Evento evento = eventoService.excluir(id, request);
+        if (evento != null) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.badRequest().build();
