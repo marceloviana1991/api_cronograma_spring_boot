@@ -5,6 +5,7 @@ import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
+import cronograma.api.infra.ValidacaoException;
 import cronograma.api.model.Avaliacao;
 import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
@@ -27,6 +28,9 @@ public class AvaliacaoService {
         var tokenJWT = tokenService.getToken(request);
         var subject = tokenService.getSubject(tokenJWT);
         var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
+        if (!eventoRepository.existsById(avaliacaoCadastrarDTO.eventoId())) {
+            throw new ValidacaoException("Id do evento informado não existe");
+        }
         Evento evento = eventoRepository.getReferenceById(avaliacaoCadastrarDTO.eventoId());
         Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
         avaliacao.setCronograma(cronograma);

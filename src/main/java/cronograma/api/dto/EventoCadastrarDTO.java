@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalTime;
 
-public record EventoCadastrarDTO(
+public record EventoCadastrarDTO (
         @NotBlank
         String nome,
         @NotNull
