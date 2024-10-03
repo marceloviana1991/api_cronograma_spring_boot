@@ -24,12 +24,13 @@ public class TratadorDeErros {
 
     @ExceptionHandler({ValidacaoException.class})
     public ResponseEntity<?> tratarErro400(RuntimeException runtimeException) {
-        return ResponseEntity.badRequest().body(new DadosErro(runtimeException));
+        return ResponseEntity.badRequest().body(new DadosErroService(runtimeException));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
-    public ResponseEntity<?> tratarErro400() {
-        return ResponseEntity.badRequest().body(new DadosErroValicacaoGenerico());
+    public ResponseEntity<?> tratarErro400(HttpMessageNotReadableException httpMessageNotReadableException) {
+        var erro = httpMessageNotReadableException.getMessage();
+        return ResponseEntity.badRequest().body(new DadosErroDesrializacao(erro));
     }
 
     private record DadosErroValidacao(String campo, String mensagem) {
@@ -38,15 +39,12 @@ public class TratadorDeErros {
         }
     }
 
-    private record DadosErro(String mensagem) {
-        public DadosErro(RuntimeException erro) {
+    private record DadosErroService(String mensagem) {
+        public DadosErroService(RuntimeException erro) {
             this(erro.getMessage());
         }
     }
-    private record DadosErroValicacaoGenerico(String mensagem) {
-        public DadosErroValicacaoGenerico() {
-            this("Campo inválido");
-        }
+    private record DadosErroDesrializacao(String mensagem) {
     }
 
 }
