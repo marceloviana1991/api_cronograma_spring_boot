@@ -32,6 +32,9 @@ public class AvaliacaoService {
             throw new ValidacaoException("Id do evento informado não existe");
         }
         Evento evento = eventoRepository.getReferenceById(avaliacaoCadastrarDTO.eventoId());
+        if (!evento.isAtivo()) {
+            throw new ValidacaoException("Id do evento informado foi desativado");
+        }
         Avaliacao avaliacao = new Avaliacao(avaliacaoCadastrarDTO);
         avaliacao.setCronograma(cronograma);
         avaliacao.setEvento(evento);
@@ -47,6 +50,6 @@ public class AvaliacaoService {
             avaliacao.atualizar(avaliacaoAtualizarDTO);
             return avaliacao;
         }
-        return null;
+        throw new ValidacaoException("Atualização autorizada somente para usuário proprietário");
     }
 }

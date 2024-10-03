@@ -4,6 +4,7 @@ import cronograma.api.Repository.CronogramaRepository;
 import cronograma.api.Repository.EventoRepository;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
+import cronograma.api.infra.ValidacaoException;
 import cronograma.api.model.Cronograma;
 import cronograma.api.model.Evento;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +38,7 @@ public class EventoService {
             evento.atualizar(eventoAtualizarDTO);
             return evento;
         }
-        return null;
+        throw new ValidacaoException("Atualização autorizada somente para usuário proprietário");
     }
 
     public Evento excluir(Long id,  HttpServletRequest request) {
@@ -49,6 +50,6 @@ public class EventoService {
             evento.excluir();
             return evento;
         }
-        return null;
+        throw new ValidacaoException("Exclusão autorizada somente para usuário proprietário");
     }
 }
