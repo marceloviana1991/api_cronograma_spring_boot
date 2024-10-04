@@ -2,7 +2,8 @@ package cronograma.api.model;
 
 public enum Role {
     ADMIN("admin"),
-    USER("user");
+    USER("user"),
+    BLOQUEADO("bloqueado");
 
     private String role;
 

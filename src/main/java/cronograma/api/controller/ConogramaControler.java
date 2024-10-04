@@ -14,8 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+
 @RestController
-@RequestMapping
+@RequestMapping("usuarios")
 public class ConogramaControler {
 
     @Autowired
@@ -47,12 +49,19 @@ public class ConogramaControler {
         return ResponseEntity.created(uri).body(new CronogramaDetalhamentoDTO(cronograma));
     }
 
-    @DeleteMapping("/deletar/{id}")
+    @GetMapping
+    public ResponseEntity<List<CronogramaListarDTO>> listarCronogramas() {
+        List<CronogramaListarDTO> cronogramaListarDTOList = cronogramaRepository.findAll().stream()
+                .map(CronogramaListarDTO::new).toList();
+        return ResponseEntity.ok(cronogramaListarDTOList);
+    }
+
+    @PutMapping("/bloquear/{id}")
     @Transactional
     public ResponseEntity<?> excluirCronograma(@PathVariable Long id) {
         Cronograma cronograma = cronogramaRepository.getReferenceById(id);
-        cronogramaRepository.delete(cronograma);
-        return ResponseEntity.noContent().build();
+        cronograma.bloquar();
+        return ResponseEntity.ok(new CronogramaDetalhamentoDTO(cronograma));
     }
 
 }

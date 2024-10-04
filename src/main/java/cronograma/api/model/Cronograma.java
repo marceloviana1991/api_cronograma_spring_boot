@@ -49,12 +49,18 @@ public class Cronograma implements UserDetails {
         }
     }
 
+    public void bloquar() {
+        this.role = Role.BLOQUEADO;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == Role.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if (this.role == Role.USER) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_BLOQUEADO"));
     }
 
     @Override
@@ -86,4 +92,5 @@ public class Cronograma implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
 }

@@ -26,10 +26,12 @@ public class SecurityConfigurations {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers(HttpMethod.POST, "/login").permitAll();
-                    req.requestMatchers(HttpMethod.POST, "/cadastro").permitAll();
-                    req.requestMatchers(HttpMethod.DELETE, "/deletar/{id}").hasRole("ADMIN");
-                    req.anyRequest().authenticated();
+                    req.requestMatchers(HttpMethod.POST, "usuarios/login").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "usuarios/cadastro").permitAll();
+                    req.requestMatchers(HttpMethod.PUT, "usuarios/bloquear/{id}").hasRole("ADMIN");
+                    req.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN");
+                    req.requestMatchers("/eventos", "eventos/{id}", "/avaliacoes", "avaliacoes/{id}")
+                            .hasRole("USER");
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
