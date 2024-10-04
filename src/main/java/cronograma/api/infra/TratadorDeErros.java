@@ -23,8 +23,9 @@ public class TratadorDeErros {
     }
 
     @ExceptionHandler({ValidacaoException.class})
-    public ResponseEntity<?> tratarErro400(RuntimeException runtimeException) {
-        return ResponseEntity.badRequest().body(new DadosErroService(runtimeException));
+    public ResponseEntity<?> tratarErro400(ValidacaoException validacaoException) {
+        var erro = validacaoException.getMessage();
+        return ResponseEntity.badRequest().body(new DadosErroService(erro));
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
@@ -38,11 +39,7 @@ public class TratadorDeErros {
             this(erro.getField(), erro.getDefaultMessage());
         }
     }
-
     private record DadosErroService(String mensagem) {
-        public DadosErroService(RuntimeException erro) {
-            this(erro.getMessage());
-        }
     }
     private record DadosErroDesrializacao(String mensagem) {
     }
