@@ -1,17 +1,15 @@
 package cronograma.api.controller;
 
-import cronograma.api.Repository.AvaliacaoRepository;
-import cronograma.api.Repository.CronogramaRepository;
-import cronograma.api.Repository.EventoRepository;
-import cronograma.api.Service.AvaliacaoService;
-import cronograma.api.Service.TokenService;
+import cronograma.api.repository.AvaliacaoRepository;
+import cronograma.api.repository.CronogramaRepository;
+import cronograma.api.repository.EventoRepository;
+import cronograma.api.service.AvaliacaoService;
+import cronograma.api.service.TokenService;
 import cronograma.api.dto.AvaliacaoAtualizarDTO;
 import cronograma.api.dto.AvaliacaoCadastrarDTO;
 import cronograma.api.dto.AvaliacaoDetalhamentoDTO;
 import cronograma.api.dto.AvaliacaoListarDTO;
 import cronograma.api.model.Avaliacao;
-import cronograma.api.model.Cronograma;
-import cronograma.api.model.Evento;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

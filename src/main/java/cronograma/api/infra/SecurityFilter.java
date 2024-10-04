@@ -1,7 +1,7 @@
 package cronograma.api.infra;
 
-import cronograma.api.Repository.CronogramaRepository;
-import cronograma.api.Service.TokenService;
+import cronograma.api.repository.CronogramaRepository;
+import cronograma.api.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

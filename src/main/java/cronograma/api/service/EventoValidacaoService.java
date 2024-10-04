@@ -1,6 +1,6 @@
-package cronograma.api.Service;
+package cronograma.api.service;
 
-import cronograma.api.Repository.EventoRepository;
+import cronograma.api.repository.EventoRepository;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.infra.ValidacaoException;

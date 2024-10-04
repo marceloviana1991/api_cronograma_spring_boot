@@ -1,6 +1,6 @@
-package cronograma.api.Service;
+package cronograma.api.service;
 
-import cronograma.api.Repository.CronogramaRepository;
+import cronograma.api.repository.CronogramaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

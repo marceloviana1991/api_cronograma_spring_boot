@@ -1,4 +1,4 @@
-package cronograma.api.Repository;
+package cronograma.api.repository;
 
 import cronograma.api.model.DiaDaSemana;
 import cronograma.api.model.Evento;

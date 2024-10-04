@@ -1,4 +1,4 @@
-package cronograma.api.Repository;
+package cronograma.api.repository;
 
 import cronograma.api.model.Avaliacao;
 import org.springframework.data.domain.Pageable;

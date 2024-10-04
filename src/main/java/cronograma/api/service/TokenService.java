@@ -1,4 +1,4 @@
-package cronograma.api.Service;
+package cronograma.api.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

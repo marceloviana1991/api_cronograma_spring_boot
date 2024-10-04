@@ -1,7 +1,7 @@
 package cronograma.api.controller;
 
-import cronograma.api.Repository.EventoRepository;
-import cronograma.api.Service.EventoService;
+import cronograma.api.repository.EventoRepository;
+import cronograma.api.service.EventoService;
 import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoDetalhamentoDTO;

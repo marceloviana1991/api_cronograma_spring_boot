@@ -1,7 +1,7 @@
 package cronograma.api.controller;
 
-import cronograma.api.Repository.CronogramaRepository;
-import cronograma.api.Service.TokenService;
+import cronograma.api.repository.CronogramaRepository;
+import cronograma.api.service.TokenService;
 import cronograma.api.dto.*;
 import cronograma.api.infra.CronogramaTokenJWT;
 import cronograma.api.model.Cronograma;
