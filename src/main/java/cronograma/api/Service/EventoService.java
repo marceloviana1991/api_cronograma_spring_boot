@@ -6,13 +6,10 @@ import cronograma.api.dto.EventoAtualizarDTO;
 import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.infra.ValidacaoException;
 import cronograma.api.model.Cronograma;
-import cronograma.api.model.DiaDaSemana;
 import cronograma.api.model.Evento;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class EventoService {
@@ -22,17 +19,14 @@ public class EventoService {
     private CronogramaRepository cronogramaRepository;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private EventoValidacaoService eventoValidacaoService;
 
     public Evento instanciar(EventoCadastrarDTO eventoCadastrarDTO, HttpServletRequest request) {
         var tokenJWT = tokenService.getToken(request);
         var subject = tokenService.getSubject(tokenJWT);
         var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        var eventosCoqueDeHorario = eventoRepository.findByChoqueDeHorario(eventoCadastrarDTO.horario(),
-                eventoCadastrarDTO.horarioTermina(),
-                DiaDaSemana.fromString(eventoCadastrarDTO.diaDaSemana()));
-        if (!eventosCoqueDeHorario.isEmpty()) {
-            throw new ValidacaoException("Evento com choque de horário");
-        }
+        eventoValidacaoService.validarInstancia(eventoCadastrarDTO);
         Evento evento = new Evento(eventoCadastrarDTO);
         evento.setCronograma(cronograma);
         return evento;
@@ -42,13 +36,7 @@ public class EventoService {
         var tokenJWT = tokenService.getToken(request);
         var subject = tokenService.getSubject(tokenJWT);
         var cronograma = (Cronograma) cronogramaRepository.findByLogin(subject);
-        var eventosCoqueDeHorario = eventoRepository.findByChoqueDeHorarioAtualizar(eventoAtualizarDTO.horario(),
-                eventoAtualizarDTO.horarioTermina(),
-                eventoAtualizarDTO.diaDaSemana(),
-                eventoAtualizarDTO.id());
-        if (!eventosCoqueDeHorario.isEmpty()) {
-            throw new ValidacaoException("Evento com choque de horário");
-        }
+        eventoValidacaoService.validarAtualizacao(eventoAtualizarDTO);
         Evento evento = eventoRepository.getReferenceById(eventoAtualizarDTO.id());
         if (cronograma.equals(evento.getCronograma())) {
             evento.atualizar(eventoAtualizarDTO);
