@@ -13,8 +13,10 @@ public class AutenticacaoService implements UserDetailsService {
     @Autowired
     private CronogramaRepository cronogramaRepository;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return cronogramaRepository.findByLogin(username);
     }
+
 }

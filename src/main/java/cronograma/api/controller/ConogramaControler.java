@@ -47,4 +47,12 @@ public class ConogramaControler {
         return ResponseEntity.created(uri).body(new CronogramaDetalhamentoDTO(cronograma));
     }
 
+    @DeleteMapping("/deletar/{id}")
+    @Transactional
+    public ResponseEntity<?> excluirCronograma(@PathVariable Long id) {
+        Cronograma cronograma = cronogramaRepository.getReferenceById(id);
+        cronogramaRepository.delete(cronograma);
+        return ResponseEntity.noContent().build();
+    }
+
 }

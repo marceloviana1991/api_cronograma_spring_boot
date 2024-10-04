@@ -27,11 +27,14 @@ public class Cronograma implements UserDetails {
     @Column(unique=true)
     private String login;
     private String senha;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public Cronograma(CronogramaCadastrarDTO cronogramaCadastrarDTO) {
         this.nome = cronogramaCadastrarDTO.nome();
         this.login = cronogramaCadastrarDTO.login();
         this.senha = new BCryptPasswordEncoder().encode(cronogramaCadastrarDTO.senha());
+        this.role = Role.USER;
     }
 
     public void atualizar(CronogramaAtualizarDTO cronogramaAtualizarDTO) {
@@ -48,6 +51,9 @@ public class Cronograma implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.role == Role.ADMIN) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

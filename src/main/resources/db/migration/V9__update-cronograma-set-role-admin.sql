@@ -1,0 +1,1 @@
+update cronogramas set role = "ADMIN" where id=11;
