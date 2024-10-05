@@ -5,6 +5,7 @@ import cronograma.api.service.TokenService;
 import cronograma.api.dto.*;
 import cronograma.api.infra.CronogramaTokenJWT;
 import cronograma.api.model.Cronograma;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,7 @@ public class ConogramaControler {
     }
 
     @GetMapping
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<List<CronogramaListarDTO>> listarCronogramas() {
         List<CronogramaListarDTO> cronogramaListarDTOList = cronogramaRepository.findAll().stream()
                 .map(CronogramaListarDTO::new).toList();
@@ -58,6 +60,7 @@ public class ConogramaControler {
 
     @PutMapping("/bloquear/{id}")
     @Transactional
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> excluirCronograma(@PathVariable Long id) {
         Cronograma cronograma = cronogramaRepository.getReferenceById(id);
         cronograma.bloquar();

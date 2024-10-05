@@ -7,6 +7,7 @@ import cronograma.api.dto.EventoCadastrarDTO;
 import cronograma.api.dto.EventoDetalhamentoDTO;
 import cronograma.api.dto.EventoListarDTO;
 import cronograma.api.model.Evento;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/eventos")
+@SecurityRequirement(name = "bearer-key")
 public class EventoControler {
 
     @Autowired

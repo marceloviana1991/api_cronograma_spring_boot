@@ -10,6 +10,7 @@ import cronograma.api.dto.AvaliacaoCadastrarDTO;
 import cronograma.api.dto.AvaliacaoDetalhamentoDTO;
 import cronograma.api.dto.AvaliacaoListarDTO;
 import cronograma.api.model.Avaliacao;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/avaliacoes")
+@SecurityRequirement(name = "bearer-key")
 public class AvaliacaoControler {
 
     @Autowired
